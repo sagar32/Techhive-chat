@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="chatSystem">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> Chat like facebook </title>
+        <!--3rd Party Fonts & Icons-->
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans"/>
+
+        <!-- Bootstrap -->
+        <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <!--- custom css --->
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+
+
+    </head>
+    <body ng-controller="myCtrl">
+        <!--- login and Register ----->
+        <div class="container" ng-show="!isLogin" >    
+            <center>  <h1>{{techhive}}</h1></center>
+            <div id="loginbox" style="margin-top:10px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+                <div class="panel panel-info" >
+                    <div class="panel-heading">
+                        <div class="panel-title">Sign In</div>
+                        <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#">Forgot password?</a></div>
+                    </div>     
+
+                    <div style="padding-top:30px" class="panel-body" >
+
+                        <div ng-if="isError1" ng-bind="isError1" class="alert alert-danger col-sm-12"></div>
+
+                        <form class="form-horizontal"  role="form">
+
+                            <div style="margin-bottom: 25px" class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input ng-model="userName" type="text" class="form-control" name="username" value="" placeholder="enter username">                                        
+                            </div>
+
+                            <div style="margin-bottom: 25px" class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input ng-model="userPassword" type="password" class="form-control" name="password" placeholder="Enter password">
+                            </div>
+
+
+
+                            <div class="input-group pull-left">
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div style="margin-top:10px" class="form-group">
+                                <!-- Button -->
+
+                                <div class="col-sm-12 controls">
+                                    <button ng-click="loginUser()" class="btn btn-success">Login  </button> 
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-12 control">
+                                    <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
+                                        Don't have an account! 
+                                        <a href="#" onClick="$('#loginbox').hide();
+                                                        $('#signupbox').show()">
+                                            Sign Up Here
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>    
+                        </form>     
+
+
+
+                    </div>                     
+                </div>  
+            </div>
+            <div id="signupbox" style="display:none; margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <div class="panel-title">Sign Up</div>
+                        <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide();
+                                        $('#loginbox').show()">Sign In</a></div>
+                    </div>  
+                    <div class="panel-body" >
+                        <div ng-if="isError" ng-bind="isError" class="alert alert-danger col-sm-12"></div>
+                        <form id="signupform" class="form-horizontal" role="form">
+
+                            <div id="signupalert" style="display:none" class="alert alert-danger">
+                                <p>Error:</p>
+                                <span></span>
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label for="email" class="col-md-3 control-label">Email</label>
+                                <div class="col-md-9">
+                                    <input ng-model="register.email" type="text" class="form-control" name="email" placeholder="Email Address">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="firstname" class="col-md-3 control-label">UserName</label>
+                                <div class="col-md-9">
+                                    <input ng-model="register.username" type="text" class="form-control" name="username" placeholder="UserName">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="col-md-3 control-label">Password</label>
+                                <div class="col-md-9">
+                                    <input ng-model="register.password" type="password" class="form-control" name="passwd" placeholder="Password">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <!-- Button -->                                        
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button ng-disabled="!register" ng-click="registerUser()" type="submit" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div> 
+        </div>
+
+        <!--- end login Register --->
+
+        <div class="container fill" ng-show="isLogin">
+            <div class="row chat-wrap">
+
+                <!-- Contacts & Conversations -->
+                <div class="col-sm-3 panel-wrap">
+
+                    <!-- Overlay Menu / Contacts -->
+                    <div class="col-sm-12 section-wrap collapse" id="Contacts">
+
+                        <!--Header-->
+                        <div class="row header-wrap">
+                            <div class="chat-header col-sm-12">
+                                <h4>Select a Contact</h4>
+                                <div class="header-button">
+                                    <a class="btn pull-right">
+                                        <i class="fa fa-close"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Left Menu / Conversation List-->
+                    <div class="col-sm-12 section-wrap">
+
+                        <!--Header-->
+                        <div class="row header-wrap">
+                            <div class="chat-header col-sm-12">
+                                <h4 id="username">Welcome {{activeUsername.username}}...!</h4>
+                                <div class="header-button">
+                                    <a class="btn pull-right" href="#Contacts" data-toggle="collapse">
+                                        <i class="fa fa-pencil-square-o fa-lg"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Conversations-->
+                        <div class="row content-wrap">
+                            <div class="conversation btn">
+                                <div class="media-body">
+                                    <h5 class="media-heading" id="contactName">Sandip</h5>
+                                    <small class="pull-right time">Last seen 12:10am</small>
+                                </div>
+                            </div>
+                            <div class="conversation btn">
+                                <div class="media-body">
+                                    <h5 class="media-heading">Praksh</h5>
+                                    <small class="pull-right time">Last seen 12:10am</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Messages & Info -->
+                <div class="col-sm-9 panel-wrap">
+
+                    <!--Main Content / Message List-->
+                    <div class="section-wrap" ng-class="{'col-sm-12':showOnlineUser,'col-sm-9':!showOnlineUser}" id="Messages">
+
+                        <!--Header-->
+                        <div class="row header-wrap">
+                            <div class="chat-header col-sm-12">
+                                <h4>Conversation Title
+                                    <span ng-click="logoutUser()" class="pull-right">Logout</span>
+                                </h4>
+
+                                <div class="header-button">
+                                    <a ng-click="showOnlineUser = !showOnlineUser" class="btn pull-right info-btn">
+                                        <i ng-class="{'fa fa-arrow-right':showOnlineUser,'fa fa-users':!showOnlineUser}"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Messages-->
+                        <div class="row content-wrap messages" id="chatWindow">
+                            <div ng-repeat="msg in activeMsg" ng-class="{'msg':msg.sender!=activeUsername._id,'msg1':msg.sender==activeUsername._id}">
+                                <div class="media-body">
+                                    <h5 class="media-heading">{{msg.sender}}</h5>
+                                    <small class="col-sm-11">{{msg.msg}}</small>
+                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Message box & Send Button-->
+                        <div class="row send-wrap">
+                            <div class="send-message">
+                                <div class="message-text">
+                                    <textarea my-enter ng-model="message" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
+                                </div>
+                                <div class="send-button">
+                                    <a ng-click="sendMsg()" class="btn">Send <i class="fa fa-send"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--Sliding Menu / Conversation Members-->
+                    <div class="col-sm-3 section-wrap" ng-hide="showOnlineUser" id="Members">
+
+                        <!--Header-->
+                        <div class="row header-wrap">
+                            <div class="chat-header col-sm-12">
+                                <h4>Conversation Info</h4>
+
+                            </div>
+                        </div>
+
+                        <!--Members-->
+                        <div class="row content-wrap">
+                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'">
+                                <div class="media-body" ng-click="connectUserRoom(user)">
+                                    <h5 class="media-heading" ng-bind="user.username"></h5>
+                                    <small class="pull-left time"><i>{{user.roomId}}</i></small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/angular/angular.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/app.js"></script>
+
+    </body>
+</html>

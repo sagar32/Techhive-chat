@@ -1,0 +1,24 @@
+{
+  "name": "Techhive-chat",
+  "version": "1.0.0",
+  "description": "This is chat system like facebook chat.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sagar chopada",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.5.8",
+    "async": "^2.0.1",
+    "bootstrap": "^3.3.7",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "font-awesome": "^4.6.3",
+    "fontawesome": "^4.5.0",
+    "jquery": "^3.1.0",
+    "mongo-fast-join": "0.0.11",
+    "mongodb": "^2.2.10",
+    "socket.io": "^1.4.8"
+  }
+}

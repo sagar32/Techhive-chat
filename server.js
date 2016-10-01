@@ -26,11 +26,6 @@ async.series([
 
 //start connection with mongo db
 
-
-// set global variables
-    var usernames = [];
-    var messages = [];
-
 // Initilize app to dependency
     app.use(express.static(__dirname));
 
@@ -42,8 +37,6 @@ async.series([
 // start socket.io
     io.sockets.on('connection', function (socket) {
 
-        getRegUsers();
-        allRoomMsg();
 // Login User Here.
         socket.on('loginUser', function (data, callback) {
             usersModule.loginUser(data, function (response) {
@@ -89,11 +82,11 @@ async.series([
 // send message store
         socket.on("sendMessage", function (data, callback) {
             messageStorage.setMessage(data);
+            var time = new Date().getTime();
             var roomIndex = "";
             async.series([
                 function (callback) {
                     for (var key in allRoomViseMsg) {
-                        console.log(allRoomViseMsg[key]);
                         if (allRoomViseMsg[key].roomId == data.roomId) {
                             roomIndex = key;
                         }
@@ -102,15 +95,13 @@ async.series([
                 }
             ], function (err) {
                 if (roomIndex) {
-                    allRoomViseMsg[roomIndex].messages.push({msg: data.msg, sender: data.id});
+                    allRoomViseMsg[roomIndex].messages.push({msg: data.msg, sender: data.id, time: time});
                     io.sockets.emit("allRoomMsg", allRoomViseMsg);
                 } else {
-                    allRoomViseMsg.push({roomId: data.roomId, messages: [{msg: data.msg, sender: data.id}]});
+                    allRoomViseMsg.push({roomId: data.roomId, messages: [{msg: data.msg, sender: data.id, time: time}]});
                     io.sockets.emit("allRoomMsg", allRoomViseMsg);
                 }
             });
-
-
         });
 
 //retirn all room messages
@@ -124,6 +115,7 @@ async.series([
 
             });
         }
-
+        getRegUsers();
+        allRoomMsg();
     });
 });

@@ -1,5 +1,5 @@
 var myMongoCon = require('../myMongoCon');
-var async = require("async");
+var async = require("async"); 
 
 module.exports = {
     userRegister: function (newUser, callback) {
@@ -11,7 +11,6 @@ module.exports = {
             } else {
                 collection.insert(newUser, function (err, success) {
                     if (success.insertedCount == "1") {
-                        console.log(success.ops[0]);
                         callback(success.ops[0]);
                     } else {
                         callback(false);
@@ -19,7 +18,6 @@ module.exports = {
                 });
             }
         });
-
     },
     loginUser: function (loginCredential, callback) {
         var db = myMongoCon.getDB();
@@ -58,7 +56,6 @@ module.exports = {
             if (err)
                 callback(false);
             if (result.length > 0) {
-                console.log(result[0].connectedUser);
                 var flag = false;
 
                 async.series([
@@ -72,13 +69,10 @@ module.exports = {
                         callback();
                     }
                 ], function (err) {
-                    console.log(flag);
                     if (flag) {
                         callback(returnRoomId);
                     } else {
-                        console.log("else no malyu");
                         var roomId = Math.random().toString(36).substring(7);
-                        console.log(roomId);
                         userRoom.find({id: meWith.with._id}).toArray(function (err, result) {
                             if (result.length > 0) {
                                 userRoom.update({id: meWith.me._id}, {$push: {connectedUser: {userId: meWith.with._id, roomId: roomId}, index: meWith.with._id}});
@@ -97,7 +91,6 @@ module.exports = {
 
             } else {
                 var roomId = Math.random().toString(36).substring(7);
-                console.log(roomId);
                 userRoom.find({id: meWith.with._id}).toArray(function (err, result) {
                     if (result.length > 0) {
                         userRoom.insert({id: meWith.me._id, connectedUser: [{userId: meWith.with._id, roomId: roomId}], index: [meWith.with._id]});

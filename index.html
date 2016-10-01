@@ -175,20 +175,20 @@
                         </div>
 
                         <!--Conversations-->
-<!--                        <div class="row content-wrap">
-                            <div class="conversation btn">
-                                <div class="media-body">
-                                    <h5 class="media-heading" id="contactName">Sandip</h5>
-                                    <small class="pull-right time">Last seen 12:10am</small>
-                                </div>
-                            </div>
-                            <div class="conversation btn">
-                                <div class="media-body">
-                                    <h5 class="media-heading">Praksh</h5>
-                                    <small class="pull-right time">Last seen 12:10am</small>
-                                </div>
-                            </div>
-                        </div>-->
+                                               <div class="row content-wrap">
+<!--                                                    <div class="conversation btn">
+                                                        <div class="media-body">
+                                                            <h5 class="media-heading" id="contactName">Sandip</h5>
+                                                            <small class="pull-right time">Last seen 12:10am</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="conversation btn">
+                                                        <div class="media-body">
+                                                            <h5 class="media-heading">Praksh</h5>
+                                                            <small class="pull-right time">Last seen 12:10am</small>
+                                                        </div>
+                                                    </div>-->
+                                                </div>
 
                     </div>
 
@@ -203,7 +203,7 @@
                         <!--Header-->
                         <div class="row header-wrap">
                             <div class="chat-header col-sm-12">
-                                <h4>Conversation Title
+                                <h4>{{chatWith||"Conversation Title"}}
                                     <span ng-click="logoutUser()" class="pull-right">Logout</span>
                                 </h4>
 
@@ -217,11 +217,11 @@
 
                         <!--Messages-->
                         <div class="row content-wrap messages" id="chatWindow">
-                            <div ng-repeat="msg in activeMsg" ng-class="{'msg':msg.sender!=activeUsername._id,'msg1':msg.sender==activeUsername._id}">
+                            <div ng-repeat="msg in activeMsg" ng-class="{'msg':msg.sender != activeUsername._id,'msg1':msg.sender == activeUsername._id}">
                                 <div class="media-body">
-                                    <h5 class="media-heading">{{msg.sender}}</h5>
+                                    <!--<h5 class="media-heading">{{msg.sender}}</h5>-->
                                     <small class="col-sm-11">{{msg.msg}}</small>
-                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> {{msg.time|timeAgo}}</small>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
 
                         <!--Members-->
                         <div class="row content-wrap">
-                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId==openRoom)&&user.roomId}">
+                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
                                 <div class="media-body" ng-click="connectUserRoom(user)">
                                     <h5 class="media-heading" ng-bind="user.username"></h5>
                                     <small class="pull-left time"><i>Available to chat</i></small>
@@ -274,6 +274,9 @@
         <script src="node_modules/angular/angular.min.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script src="node_modules/angular-timeago/dist/angular-timeago.min.js"></script>
+        <script src="node_modules/angular-timeago/dist/angular-timeago-core.min.js"></script>
+        <script src="node_modules/angular-timeago/src/languages/time-ago-language-en_US.js"></script>
         <script src="js/app.js"></script>
 
     </body>

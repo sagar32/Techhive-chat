@@ -2,7 +2,7 @@
 
 /* global io */
 
-angular.module("chatSystem", [])
+angular.module("chatSystem", ['yaru22.angular-timeago'])
         .controller("myCtrl", ['$scope', 'socket', '$window','$timeout', function ($scope, socket, $window,$timeout) {
 
 //init application
@@ -71,7 +71,6 @@ angular.module("chatSystem", [])
                                 $scope.isError = "your email or username already regitred with us."
                             }
                         });
-                        console.log($scope.register);
                     } else {
                         $scope.isError = 'All fields are required.';
                     }
@@ -105,6 +104,8 @@ angular.module("chatSystem", [])
                         $scope.openRoom = user.roomId;
                         $scope.switchRoom($scope.openRoom);
                     }
+                    
+                    $scope.chatWith=user.username;
                 };
                 //update user list.
                 socket.on('allRoomMsg', function (data) {
@@ -135,15 +136,11 @@ angular.module("chatSystem", [])
                 }
 // send message
                 $scope.sendMsg = function () {
-                    if (angular.isDefined($scope.message) && angular.isDefined($scope.openRoom) && $scope.message != "" && $scope.openRoom != "") {
-                        console.log("send msg not blank");
+                    if (angular.isDefined($scope.message) && angular.isDefined($scope.openRoom) && $scope.message != "" && $scope.openRoom != "") { 
                         socket.emit("sendMessage", {msg: $scope.message, roomId: $scope.openRoom, id: $scope.activeUsername._id}, function (data) {
                             $scope.switchRoom($scope.openRoom);
                         });
                         $scope.message = "";
-                    } else {
-                        console.log("blank else");
-
                     }
                 }
 

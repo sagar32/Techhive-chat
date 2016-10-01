@@ -175,7 +175,7 @@
                         </div>
 
                         <!--Conversations-->
-                        <div class="row content-wrap">
+<!--                        <div class="row content-wrap">
                             <div class="conversation btn">
                                 <div class="media-body">
                                     <h5 class="media-heading" id="contactName">Sandip</h5>
@@ -188,7 +188,7 @@
                                     <small class="pull-right time">Last seen 12:10am</small>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
 
                     </div>
 
@@ -253,7 +253,7 @@
 
                         <!--Members-->
                         <div class="row content-wrap">
-                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'">
+                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId==openRoom)&&user.roomId}">
                                 <div class="media-body" ng-click="connectUserRoom(user)">
                                     <h5 class="media-heading" ng-bind="user.username"></h5>
                                     <small class="pull-left time"><i>Available to chat</i></small>

@@ -3,9 +3,9 @@
 * { margin: 0 auto; padding: 0; }
 a, li, img, input, textarea, a span, button { -webkit-transition: all 0.2s ease-in-out; -moz-transition: all 0.2s ease-in-out; -o-transition: all 0.2s ease-in-out; -ms-transition: all 0.2s ease-in-out; transition: all 0.2s ease-in-out; }
 img { max-width: 100% !important; }
-a { color:;
+a { 
 }
-a:hover { color:;
+a:hover { 
 }
 a:focus { text-decoration: none; }
 a, a:hover { text-decoration: none; }
@@ -33,7 +33,7 @@ html, body { font-family: 'Open Sans', serif; background-color: blanchedalmond; 
 /* Panel Wrapper: Side Menu - Content Window */
 .panel-wrap { height: 100%; padding: 0; }
 /* Section Wrapper: Conversations - Contacts - Messages - Details */
-.section-wrap { height: 100%; }
+.section-wrap { height: 100%; border-right: 1px solid #ccc; }
 /* Header Wrapper */
 .header-wrap { height: 10%; }
 /* Content Wrapper */
@@ -78,6 +78,18 @@ html, body { font-family: 'Open Sans', serif; background-color: blanchedalmond; 
     border-color: #00bfff;
     color: #fff;
 }
+
+.contact_online {
+    background: #41ADE2;
+    color:#fff;
+    display: block;
+    width: 100%;
+    position: relative;
+}
+.contact_online .time {
+    color: #fff;
+}
+.form-control { border-radius: 0px; border: 0 solid #ccc; border-right: 1px solid #ccc; }
 #Messages { /* background:url(../img/bg.jpg) repeat; */ }
 /* Message Sender */
 .message-wrap .media-heading { color: #2285b3; font-weight: 700; }
@@ -85,9 +97,7 @@ html, body { font-family: 'Open Sans', serif; background-color: blanchedalmond; 
 .time { color: #bfbfbf; }
 /*************** SEND MESSAGE **********************/
 /* Send Message Item */
-.send-message { width: 100%; height: 100%; background-color: whitesmoke; border: 1px solid #ccc; display: table; }
-/* Message Text */
-.message-text { padding: 2px; display: table-cell; vertical-align: middle; }
+.send-message { width: 100%; height: 92%; background-color: whitesmoke; border: 1px solid #ccc; display: table; }
 /* Send Button */
 .send-button { display: table-cell; vertical-align: middle; text-align: center; width: 10%; }
 /* Send Message Properties */

@@ -3,11 +3,12 @@
 /* global io */
 
 angular.module("chatSystem", [])
-        .controller("myCtrl", ['$scope', 'socket', '$window', function ($scope, socket, $window) {
+        .controller("myCtrl", ['$scope', 'socket', '$window','$timeout', function ($scope, socket, $window,$timeout) {
 
 //init application
                 $scope.techhive = "Welcome To Techhive Chat System.";
                 $scope.onlineUsers = [];
+                $scope.allRoomMsg = [];
                 $scope.isError1 = false;
                 $scope.isError = false;
 
@@ -76,13 +77,6 @@ angular.module("chatSystem", [])
                     }
                 }
 // chat application start..
-                //update user list.
-                socket.on('allRoomMsg', function (data) {
-                    $scope.allRoomMsg = data;
-                    $scope.switchRoom($scope.openRoom);
-                    console.log($scope.allRoomMsg);
-                });
-                //**********
 
 // logout user
                 $scope.logoutUser = function () {
@@ -96,7 +90,6 @@ angular.module("chatSystem", [])
                             var index = -1;
                             if (data) {
                                 $scope.switchRoom(data);
-                                console.log(data);
                                 $scope.openRoom = data;
                                 angular.forEach($scope.allUserList, function (value, key) {
                                     if (value._id === user._id) {
@@ -113,10 +106,16 @@ angular.module("chatSystem", [])
                         $scope.switchRoom($scope.openRoom);
                     }
                 };
+                //update user list.
+                socket.on('allRoomMsg', function (data) {
+                    $scope.allRoomMsg = data;
+                    $scope.switchRoom($scope.openRoom);
+                });
+                //**********
 //switch room on click user
                 $scope.switchRoom = function (roomId) {
                     if ($scope.allRoomMsg.length > 0) {
-                        var index=-1;
+                        var index = -1;
                         angular.forEach($scope.allRoomMsg, function (value, key) {
                             if (value.roomId == roomId) {
                                 return index = key;
@@ -124,20 +123,22 @@ angular.module("chatSystem", [])
                         });
                         if (index > -1) {
                             $scope.activeMsg = $scope.allRoomMsg[index].messages;
-                            console.log($scope.activeMsg );
-                        }else{
-                            $scope.activeMsg=[];
+//                            console.log($scope.activeMsg ); 
+                        } else {
+                            $scope.activeMsg = [];
                         }
-                        var $chat=$('#chatWindow');
-                        $chat.animate({ scrollTop: $chat.prop("scrollHeight")}, 1000);
+                        $timeout(function () {
+                            var $chat = $('#chatWindow');
+                            $chat.animate({scrollTop: $chat.prop("scrollHeight")}, 1000);
+                        }, 100);
                     }
                 }
 // send message
                 $scope.sendMsg = function () {
-                    if (angular.isDefined($scope.message) && angular.isDefined($scope.openRoom)) {
+                    if (angular.isDefined($scope.message) && angular.isDefined($scope.openRoom) && $scope.message != "" && $scope.openRoom != "") {
                         console.log("send msg not blank");
                         socket.emit("sendMessage", {msg: $scope.message, roomId: $scope.openRoom, id: $scope.activeUsername._id}, function (data) {
-                           $scope.switchRoom($scope.openRoom);
+                            $scope.switchRoom($scope.openRoom);
                         });
                         $scope.message = "";
                     } else {

@@ -130,7 +130,7 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                         }
                         $timeout(function () {
                             var $chat = $('#chatWindow');
-                            $chat.animate({scrollTop: $chat.prop("scrollHeight")}, 1000);
+                            $chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
                         }, 100);
                     }
                 }

@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/project/chat-like-facebook/index.html</file>
-            <file>file:/F:/project/chat-like-facebook/js/app.js</file>
-            <file>file:/F:/project/chat-like-facebook/server.js</file>
-            <file>file:/F:/project/chat-like-facebook/modules/userModule.js</file>
+            <file>file:/F:/project/Techhive-chat/modules/messageStorage.js</file>
+            <file>file:/F:/project/Techhive-chat/myMongoCon.js</file>
+            <file>file:/F:/project/Techhive-chat/css/style.css</file>
+            <file>file:/F:/project/Techhive-chat/modules/userModule.js</file>
+            <file>file:/F:/project/Techhive-chat/js/app.js</file>
+            <file>file:/F:/project/Techhive-chat/index.html</file>
+            <file>file:/F:/project/Techhive-chat/server.js</file>
         </group>
     </open-files>
 </project-private>

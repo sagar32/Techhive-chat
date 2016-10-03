@@ -49,14 +49,13 @@ async.series([
                 }
             });
         });
-
 // Registration here.
         socket.on('registerUser', function (data, callback) {
             usersModule.userRegister(data, function (response) {
                 if (response) {
                     getRegUsers();
                     callback(response);
-                } else {
+                } else { 
                     callback(false);
                 }
             });

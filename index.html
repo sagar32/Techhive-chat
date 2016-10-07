@@ -175,20 +175,15 @@
                         </div>
 
                         <!--Conversations-->
-                                               <div class="row content-wrap">
-<!--                                                    <div class="conversation btn">
-                                                        <div class="media-body">
-                                                            <h5 class="media-heading" id="contactName">Sandip</h5>
-                                                            <small class="pull-right time">Last seen 12:10am</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="conversation btn">
-                                                        <div class="media-body">
-                                                            <h5 class="media-heading">Praksh</h5>
-                                                            <small class="pull-right time">Last seen 12:10am</small>
-                                                        </div>
-                                                    </div>-->
-                                                </div>
+                        <div class="row content-wrap">
+                            <div class="conversation btn" ng-repeat="user in connectedUser| orderBy:'lastMsgTime'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}" >
+                                <div class="media-body">
+                                    <h5 class="media-heading" id="contactName">{{user.username}}</h5>
+                                    <small class="pull-right time">Last seen 12:10am</small>
+                                </div>
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -256,7 +251,7 @@
                             <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
                                 <div class="media-body" ng-click="connectUserRoom(user)">
                                     <h5 class="media-heading" ng-bind="user.username"></h5>
-                                    <small class="pull-left time"><i>Available to chat</i></small>
+                                    <small class="pull-left time"><i>{{user.roomId}}Available to chat</i></small>
                                 </div>
                             </div>
                         </div>
@@ -266,9 +261,6 @@
                 </div>
             </div>
         </div>
-
-
-
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/angular/angular.min.js"></script>

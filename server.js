@@ -19,7 +19,7 @@ async.series([
 ], function (err) {
     var usersModule = require('./modules/userModule');
     var messageStorage = require('./modules/messageStorage');
-
+    var users = [];
     var allRoomViseMsg = [];
 // start server on 3000 port
     server.listen(process.env.PORT || 3000);
@@ -36,13 +36,16 @@ async.series([
 
 // start socket.io
     io.sockets.on('connection', function (socket) {
-
+//connect to room
+        socket.on('openRoom', function (room) {
+            socket.join(room);
+        });
 // Login User Here.
         socket.on('loginUser', function (data, callback) {
             usersModule.loginUser(data, function (response) {
                 if (response) {
-                    socket.loginUser = response;
                     getRegUsers();
+                    console.log(response);
                     callback(response);
                 } else {
                     callback(false);
@@ -55,7 +58,7 @@ async.series([
                 if (response) {
                     getRegUsers();
                     callback(response);
-                } else { 
+                } else {
                     callback(false);
                 }
             });
@@ -95,10 +98,11 @@ async.series([
             ], function (err) {
                 if (roomIndex) {
                     allRoomViseMsg[roomIndex].messages.push({msg: data.msg, sender: data.id, time: time});
-                    io.sockets.emit("allRoomMsg", allRoomViseMsg);
+                    console.log(data.username);
+                    io.sockets.in(data.roomId).emit("allRoomMsg", allRoomViseMsg);
                 } else {
                     allRoomViseMsg.push({roomId: data.roomId, messages: [{msg: data.msg, sender: data.id, time: time}]});
-                    io.sockets.emit("allRoomMsg", allRoomViseMsg);
+                    io.sockets.in(data.roomId).emit("allRoomMsg", allRoomViseMsg);
                 }
             });
         });

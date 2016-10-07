@@ -1,5 +1,6 @@
 var myMongoCon = require('../myMongoCon');
-var async = require("async"); 
+var async = require("async");
+var ObjectId = require('mongodb').ObjectID;
 
 module.exports = {
     userRegister: function (newUser, callback) {
@@ -9,7 +10,7 @@ module.exports = {
             if (find.length > 0) {
                 callback(false);
             } else {
-                collection.insert(newUser, function (err, success) {
+                collection.insert({email: newUser.email, username: newUser.username, password: newUser.password, connectedUser: []}, function (err, success) {
                     if (success.insertedCount == "1") {
                         callback(success.ops[0]);
                     } else {
@@ -22,7 +23,7 @@ module.exports = {
     loginUser: function (loginCredential, callback) {
         var db = myMongoCon.getDB();
         var collection = db.collection('allUsers');
-        collection.find({$and: [{'username': loginCredential.userName}, {'password': loginCredential.userPassword}]}, {'username': 1, 'email': 1}).toArray(function (err, result) {
+        collection.find({$and: [{'username': loginCredential.userName}, {'password': loginCredential.userPassword}]}, {'username': 1, 'email': 1,connectedUser:1}).toArray(function (err, result) {
             if (err)
                 callback(false);
 
@@ -36,7 +37,7 @@ module.exports = {
     getUserList: function (callback) {
         var db = myMongoCon.getDB();
         var collection = db.collection('allUsers');
-        collection.find({}, {'username': 1, 'email': 1}).toArray(function (err, result) {
+        collection.find({}, {username: 1, email: 1}).toArray(function (err, result) {
             if (err)
                 callback(false);
 
@@ -49,15 +50,13 @@ module.exports = {
     },
     connectUserRoom: function (meWith, callback) {
         var db = myMongoCon.getDB();
-        var userRoom = db.collection('UserRoom');
-
-        userRoom.find({id: meWith.me._id}).toArray(function (err, result) {
+        var userRoom = db.collection('allUsers');
+        userRoom.find({_id:new ObjectId(meWith.me._id)}).toArray(function (err, result) {
             var returnRoomId = "";
             if (err)
                 callback(false);
             if (result.length > 0) {
                 var flag = false;
-
                 async.series([
                     function (callback) {
                         for (var i = 0; i < result[0].connectedUser.length; i++) {
@@ -71,35 +70,13 @@ module.exports = {
                 ], function (err) {
                     if (flag) {
                         callback(returnRoomId);
-                    } else {
+                    } else { 
                         var roomId = Math.random().toString(36).substring(7);
-                        userRoom.find({id: meWith.with._id}).toArray(function (err, result) {
-                            if (result.length > 0) {
-                                userRoom.update({id: meWith.me._id}, {$push: {connectedUser: {userId: meWith.with._id, roomId: roomId}, index: meWith.with._id}});
-                                userRoom.update({id: meWith.with._id}, {$push: {connectedUser: {userId: meWith.me._id, roomId: roomId}, index: meWith.me._id}});
-                                callback(roomId);
-                            } else {
-                                userRoom.update({id: meWith.me._id}, {$push: {connectedUser: {userId: meWith.with._id, roomId: roomId}, index: meWith.with._id}});
-                                userRoom.insert({id: meWith.with._id, connectedUser: [{userId: meWith.me._id, roomId: roomId}], index: [meWith.me._id]});
-                                callback(roomId);
-
-                            }
-                        });
-                    }
-                });
-
-
-            } else {
-                var roomId = Math.random().toString(36).substring(7);
-                userRoom.find({id: meWith.with._id}).toArray(function (err, result) {
-                    if (result.length > 0) {
-                        userRoom.insert({id: meWith.me._id, connectedUser: [{userId: meWith.with._id, roomId: roomId}], index: [meWith.with._id]});
-                        userRoom.update({id: meWith.with._id}, {$push: {connectedUser: {userId: meWith.me._id, roomId: roomId}, index: meWith.me._id}});
+                        console.log(roomId);
+                        userRoom.update({_id: new ObjectId(meWith.me._id)}, {$push: {connectedUser: {userId: meWith.with._id, roomId: roomId}}});
+                        userRoom.update({_id: new ObjectId(meWith.with._id)}, {$push: {connectedUser: {userId: meWith.me._id, roomId: roomId}}});
                         callback(roomId);
-                    } else {
-                        userRoom.insert({id: meWith.me._id, connectedUser: [{userId: meWith.with._id, roomId: roomId}], index: [meWith.with._id]});
-                        userRoom.insert({id: meWith.with._id, connectedUser: [{userId: meWith.me._id, roomId: roomId}], index: [meWith.me._id]});
-                        callback(roomId);
+
                     }
                 });
             }

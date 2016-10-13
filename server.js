@@ -20,7 +20,6 @@ async.series([
     var usersModule = require('./modules/userModule');
     var messageStorage = require('./modules/messageStorage');
     var users = [];
-    var allRoomViseMsg = [];
 // start server on 3000 port
     server.listen(process.env.PORT || 3000);
 
@@ -82,40 +81,18 @@ async.series([
             });
         }
 // send message store
-        socket.on("sendMessage", function (data, callback) {
+        socket.on("sendMessage", function (data) {
             messageStorage.setMessage(data);
             var time = new Date().getTime();
-            var roomIndex = "";
-            async.series([
-                function (callback) {
-                    for (var key in allRoomViseMsg) {
-                        if (allRoomViseMsg[key].roomId == data.roomId) {
-                            roomIndex = key;
-                        }
-                    }
-                    callback();
-                }
-            ], function (err) {
-                if (roomIndex) {
-                    allRoomViseMsg[roomIndex].messages.push({msg: data.msg, sender: data.id, time: time});
-                    console.log(data.username);
-                    io.sockets.in(data.roomId).emit("allRoomMsg", allRoomViseMsg);
-                } else {
-                    allRoomViseMsg.push({roomId: data.roomId, messages: [{msg: data.msg, sender: data.id, time: time}]});
-                    io.sockets.in(data.roomId).emit("allRoomMsg", allRoomViseMsg);
-                }
-            });
+            io.sockets.in(data.roomId).emit("OneRoomMsg", {roomId: data.roomId, messages: [{msg: data.msg, sender: data.id, time: time}]});
         });
 
 //retirn all room messages
         function allRoomMsg() {
             messageStorage.getMessage(function (responce) {
                 if (responce) {
-                    allRoomViseMsg = responce;
-                    socket.emit("allRoomMsg", allRoomViseMsg);
-
+                    socket.emit("allRoomMsg", responce);
                 }
-
             });
         }
         getRegUsers();

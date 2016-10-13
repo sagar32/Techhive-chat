@@ -10,6 +10,7 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                 $scope.onlineUsers = [];
                 $scope.allRoomMsg = [];
                 $scope.roomViseMsg = [];
+                $scope.register = [];
                 $scope.isError1 = false;
                 $scope.isError = false;
 
@@ -29,7 +30,6 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                                 if (v1.userId == value._id) {
                                     $scope.allUserList[key].roomId = v1.roomId;
                                     $scope.connectedUser.push(value);
-                                    console.log(value);
                                 }
                             });
                             if (value._id == $scope.activeUsername._id) {
@@ -45,11 +45,12 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
 //check user is login or not
                 if ($window.localStorage.getItem("isLoginUser")) {
                     $scope.onLoginSuccess();
-                    console.log($window.localStorage.getItem("isLoginUser"));
+                    //console.log($window.localStorage.getItem("isLoginUser"));
                 } else {
                     $scope.isLogin = false;
                 }
-                //login users
+
+//login users
                 $scope.loginUser = function () {
                     if ((angular.isDefined($scope.userName) && $scope.userName != "") && (angular.isDefined($scope.userPassword) && $scope.userPassword != "")) {
                         $scope.login = {
@@ -70,7 +71,6 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                 }
 
 //register user here
-$scope.register=[];
                 $scope.registerUser = function (img) {
                     console.log(img);
                     return false;
@@ -131,6 +131,20 @@ $scope.register=[];
                     $scope.switchRoom($scope.openRoom);
                 });
                 //**********
+                //single message.
+                socket.on('OneRoomMsg', function (data) {
+                    console.log(data);
+                    if ($scope.roomViseMsg.hasOwnProperty(data.roomId)) {
+                        $scope.roomViseMsg[data.roomId].push(data.messages[0]);
+                    } else {
+                        console.log("nathi");
+                        $scope.roomViseMsg[data.roomId] = data.messages;
+                        console.log(data.messages[0]);
+
+                    }
+                    $scope.switchRoom($scope.openRoom);
+                });
+                //**********
 //switch room on click user
                 $scope.switchRoom = function (roomId) {
                     if (roomId) {
@@ -148,14 +162,10 @@ $scope.register=[];
 // send message
                 $scope.sendMsg = function () {
                     if (angular.isDefined($scope.message) && angular.isDefined($scope.openRoom) && $scope.message != "" && $scope.openRoom != "") {
-                        socket.emit("sendMessage", {msg: $scope.message, roomId: $scope.openRoom, id: $scope.activeUsername._id}, function (data) {
-                            console.log(data + "test");
-                            $scope.switchRoom($scope.openRoom);
-                        });
+                        socket.emit("sendMessage", {msg: $scope.message, roomId: $scope.openRoom, id: $scope.activeUsername._id});
                         $scope.message = "";
                     }
                 }
-
             }])
         .factory('socket', function ($rootScope) {
             var socket = io.connect();

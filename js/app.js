@@ -70,7 +70,10 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                 }
 
 //register user here
-                $scope.registerUser = function () {
+$scope.register=[];
+                $scope.registerUser = function (img) {
+                    console.log(img);
+                    return false;
                     if (angular.isDefined($scope.register.email) && angular.isDefined($scope.register.username) && angular.isDefined($scope.register.password)) {
                         $scope.isError = "";
                         socket.emit("registerUser", $scope.register, function (data) {

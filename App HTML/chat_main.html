@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>APPCHAT</title>
+        <!-- css -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet" media="all"/>
+        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+    </head>
+    <body>
+        <div class="main_header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="chat_logo">
+                            <a class="navbar-brand" href="">
+                                <img src="images/logo.png" alt="TechHive">
+                                <span>TechHive Chat system</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="user_search">
+                            <div class="form-group">
+                                <input type="text" class="main-searchbox" id="usr" placeholder="Search chat user">
+                                <button class="btn btn-search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="user_profile">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="user-profile">
+                                    <img src="images/sub-user.jpg">
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle open-bar" data-toggle="dropdown" href="#">
+                                        <span class="fa fa-bars"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Update Profile</a></li>
+                                        <li><a href="#" class="log-out">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="chat-sidebar">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="chat-user">
+                            <ul class="chat">
+                                <!--- chat user 1 --->
+                                <li class="left clearfix"><span class="chat-img pull-left">
+                                        <img src="images/users/4.jpg" alt="User Avatar" class="img-circle" />
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="user_title">
+                                            <h2> Sandip patel
+                                                <span class="status">Online <i class="fa fa-circle online" aria-hidden="true"></i> 
+                                                    <small class="block"> <span class="notifi"> 2 </span> </small>
+                                                </span>
+                                            </h2>   
+                                        </div>
+                                        <p>  Web Designer </p>
+                                    </div>
+                                </li>
+                                <!--- end chat user 1 --->
+                                <!--- start chat user 2 --->
+                                <li class="left clearfix"><span class="chat-img pull-left">
+                                        <img src="images/users/6.jpg" alt="User Avatar" class="img-circle" />
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="user_title">
+                                            <h2> Sagar chopada
+                                                <span class="status">offline <i class="fa fa-circle offline" aria-hidden="true"></i> 
+                                                </span>
+                                            </h2>   
+                                        </div>
+                                        <p>  Web Developer </p>
+                                    </div>
+                                </li>
+                                <!--- end chat user 2 --->
+                                <!--- start chat user 3 --->
+                                <li class="left clearfix"><span class="chat-img pull-left">
+                                        <img src="images/users/2.jpg" alt="User Avatar" class="img-circle" />
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="user_title">
+                                            <h2> Prakash patel
+                                                <span class="status">Offline <i class="fa fa-circle offline" aria-hidden="true"></i> 
+                                                </span>
+                                            </h2>   
+                                        </div>
+                                        <p>  Graphics Designer </p>
+                                    </div>
+                                </li>
+                                <!--- end chat user 3 --->
+                                <!--- chat user 4 --->
+                                <li class="left clearfix"><span class="chat-img pull-left">
+                                        <img src="images/users/1.jpg" alt="User Avatar" class="img-circle" />
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="user_title">
+                                            <h2> Sandip patel
+                                                <span class="status">Online <i class="fa fa-circle online" aria-hidden="true"></i> 
+                                                    <small class="block"> <span class="notifi"> 2 </span> </small>
+                                                </span>
+                                            </h2>   
+                                        </div>
+                                        <p>  Web Designer </p>
+                                    </div>
+                                </li>
+                                <!--- end chat user 4 --->
+                            </ul>
+                        </div>
+                    </div>
+                    <!--- chatbox ---->
+                    <div class="col-md-8 col-sm-9">
+                        <div class="chatbox">
+                            <div class="chatbox_panel">
+                                <h2> <span class="title_chat_img pull-left">
+                                        <img src="images/users/6.jpg" alt="User Avatar" class="img-circle" />
+                                    </span>  
+                                    Chat with tushar </h2>
+                                <span class="status"> <i class="fa fa-circle online" aria-hidden="true"></i>Online </span> 
+                            </div>
+                            <div class="chat_panel">
+                                <div class="msg1">
+                                    <p> lorem ispum dollar Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit </p>
+                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                                </div>
+                                <div class="msg2">
+                                    <p> lorem ispum dollar Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit </p>
+                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                                </div>
+                            </div>
+                            <div class="chat_footer">
+                                <div class="input-group">
+                                    <textarea id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message" class="main-searchbox"></textarea>
+                                    <!--<input id="btn-input" type="text" class="form-control  main-searchbox" placeholder="Type your message here..." />-->
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-warning btn-sm" id="btn-chat">
+                                            Send</button>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

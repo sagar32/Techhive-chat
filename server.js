@@ -4,7 +4,10 @@ var express = require('express'),
         app = express(),
         server = require('http').createServer(app),
         io = require('socket.io').listen(server),
-        async = require("async");
+        async = require("async"),
+        fs = require("file-system"),
+        bodyParser = require("body-parser");
+var multer = require('multer');
 //Load Modules
 async.series([
     function (callback) {
@@ -27,12 +30,40 @@ async.series([
 
 // Initilize app to dependency
     app.use(express.static(__dirname));
+    // parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({extended: false}));
 
+// parse application/json
+    app.use(bodyParser.json());
+    var storage = multer.diskStorage({
+        destination: function (req, file, callback) {
+            callback(null, './upload/profilesImg');
+        },
+        filename: function (req, file, callback) {
+            console.log('.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
+            var imageName=file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
+            var data={img:imageName,userId:global.gUserId};
+            usersModule.setProfileImage(data);
+            callback(null, imageName);
+        }
+    });
+    var upload = multer({storage: storage}).single('file');
 // Get Index page defalt.
     app.get("/", function (req, res) {
         res.sendFile(__dirname + '/index.html');
     });
 
+// upload image
+    app.post('/uploadImg', function (req, res, next) {
+        upload(req, res, function (err) {
+            if (err) {
+                return res.end("Error uploading file.");
+            }else{
+                
+            }
+            res.end("Image is uploaded");
+        });
+    });
 // start socket.io
     io.sockets.on('connection', function (socket) {
 //connect to room
@@ -55,6 +86,7 @@ async.series([
         socket.on('registerUser', function (data, callback) {
             usersModule.userRegister(data, function (response) {
                 if (response) {
+                    console.log(global.gUserId + " id global");
                     getRegUsers();
                     callback(response);
                 } else {

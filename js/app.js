@@ -2,15 +2,14 @@
 
 /* global io */
 
-angular.module("chatSystem", ['yaru22.angular-timeago'])
-        .controller("myCtrl", ['$scope', 'socket', '$window', '$timeout', function ($scope, socket, $window, $timeout) {
+angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
+        .controller("myCtrl", ['$scope', 'socket', '$window', '$timeout', 'Upload', function ($scope, socket, $window, $timeout, Upload) {
 
 //init application
                 $scope.techhive = "Welcome To Techhive Chat System.";
                 $scope.onlineUsers = [];
                 $scope.allRoomMsg = [];
                 $scope.roomViseMsg = [];
-                $scope.register = [];
                 $scope.isError1 = false;
                 $scope.isError = false;
 
@@ -71,14 +70,16 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                 }
 
 //register user here
-                $scope.registerUser = function (img) {
-                    console.log(img);
-                    return false;
+                $scope.registerUser = function () {
                     if (angular.isDefined($scope.register.email) && angular.isDefined($scope.register.username) && angular.isDefined($scope.register.password)) {
                         $scope.isError = "";
+                        console.log($scope.register);
                         socket.emit("registerUser", $scope.register, function (data) {
                             if (data) {
                                 $window.localStorage.setItem("isLoginUser", JSON.stringify(data));
+                                if ($scope.file) { //check if from is valid
+                                    $scope.upload($scope.file); //call upload function
+                                }
                                 $scope.onLoginSuccess();
                             } else {
                                 $scope.isError = "your email or username already regitred with us."
@@ -88,7 +89,19 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                         $scope.isError = 'All fields are required.';
                     }
                 }
+
+//image upload start
+                $scope.uploadImage = function () {
+
+                }
+                $scope.upload = function (file) {
+                    Upload.upload({
+                        url: '/uploadImg', //webAPI exposed to upload the file
+                        data: {file: file} //pass file as data, should be user ng-model
+                    });
+                };
 // chat application start..
+
 
 // logout user
                 $scope.logoutUser = function () {
@@ -120,7 +133,7 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                         $scope.switchRoom($scope.openRoom);
                     }
 
-                    $scope.chatWith = user.username;
+                    $scope.chatWith = user;
                 };
                 //update user list.
                 socket.on('allRoomMsg', function (data) {
@@ -155,7 +168,9 @@ angular.module("chatSystem", ['yaru22.angular-timeago'])
                     }
                     $timeout(function () {
                         var $chat = $('#chatWindow');
-                        $chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
+                        //$chat.animate({scrollTop: $chat.prop("scrollHeight")}, 10);
+                        var scrollTo_val = $chat.prop('scrollHeight') + 'px';
+                        $chat.slimScroll({scrollTo: scrollTo_val});
                     }, 100);
 
                 }

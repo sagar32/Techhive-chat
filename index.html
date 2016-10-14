@@ -10,6 +10,7 @@
         <link href="node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <!--- custom css --->
         <link href="css/style.css" rel="stylesheet" media="all"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     </head>
     <body ng-controller="myCtrl">
         <!--- login and Register ----->
@@ -46,7 +47,7 @@
                             </div>
                         </div>
                         <div class="form_signup">
-                            <button type="button" ng-click="loginSignup = !loginSignup" class="btn btn-default2">signup</button>
+                            <button type="button" ng-click="loginSignup = !loginSignup" class="btn btn-default2"> signup </button>
                         </div>
                     </div>
                 </div>
@@ -64,7 +65,7 @@
                                 <form enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label for="email"><img src="images/user.png"/></label>
-                                        <input ng-model="register.username" type="text" class="form-control1" id="usr" placeholder="Enter user name">
+                                        <input ng-model="register.username" type="text" class="form-control1" id="usr" placeholder="Enter username">
                                     </div>
                                     <div class="form-group">
                                         <label for="email"><img src="images/mail.png"/></label>
@@ -72,15 +73,21 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="password"><img src="images/lock.png"/></label>
-                                        <input ng-model="register.password" type="password" class="form-control1" id="email" placeholder="Enter email">
+                                        <input ng-model="register.password" type="password" class="form-control1" id="email" placeholder="Enter password">
                                     </div>
                                     <div class="form-group">
-                                        <label for="pwd" class="upload_icon"><img src="images/upload.png"/></label>
-                                        <input type="file" image="image" name="fileToUpload" accept="image/*" class="file_upload">
-                                        <img ng-show="image" ng-src="{{image.url}}" type="{{image.file.type}}" />
+                                        <label for="pwd" class="upload_icon">
+                                            
+                                            <img src="images/upload.png" ng-show="!file"/>
+                                            <img class="chat-profile-pic" ng-show="!!file" ngf-thumbnail="file"/>
+                                            
+                                        </label>
+                                        <input type="file" ng-change="uploadImage()" ngf-select ng-model="file" name="file"  ngf-pattern="'image/*'" accept="image/*" ngf-max-size="5MB" class="file_upload">
+
+                                        
                                     </div>                           
                                     <br>
-                                    <button type="submit" ng-click="registerUser(register.image)" class="btn btn-default2">Register</button>
+                                    <button type="submit" ng-click="registerUser()" class="btn btn-default2">Register</button>
                                 </form>
 
                             </div>
@@ -119,10 +126,14 @@
                         <div class="user_profile">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="user-profile">
-                                    <img src="images/sub-user.jpg">
+                                    
+                                    <img ng-src="upload/profilesImg/{{activeUsername.profileImg}}">
+                                </li>
+                                <li class="user-profile">
+                                    <a> {{activeUsername.username}} </a>
                                 </li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle open-bar" data-toggle="dropdown" href="#">
+                                    <a href="#" class="dropdown-toggle open-bar" data-toggle="dropdown">
                                         <span class="fa fa-bars"></span>
                                     </a>
                                     <ul class="dropdown-menu">
@@ -139,13 +150,13 @@
         <div ng-show="isLogin" class="chat-sidebar">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="chat-user">
                             <ul class="chat">
                                 <!--- chat user 1 --->
-                                <li  class="left clearfix" ng-repeat="user in allUserList" ng-click="connectUserRoom(user)">
+                                <li  class="left clearfix" ng-repeat="user in allUserList" ng-click="connectUserRoom(user)" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
                                     <span class="chat-img pull-left">
-                                        <img src="images/users/4.jpg" alt="User Avatar" class="img-circle" />
+                                        <img ng-src="upload/profilesImg/{{user.profileImg}}" alt="User Avatar" class="img-circle" />
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="user_title">
@@ -159,21 +170,21 @@
                                     </div>
                                 </li>
                                 <!--- end chat user 1 --->
-                               
+
                             </ul>
                         </div>
-						<div class="chatbar">
-							<a><i class="fa fa-user" aria-hidden="true"></i> chat </a>
-						</div>
+                        <div class="chatbar">
+                            <a><i class="fa fa-user" aria-hidden="true"></i> chat </a>
+                        </div>
                     </div>
                     <!--- chatbox ---->
                     <div class="col-md-8 col-sm-9">
                         <div class="chatbox">
-                            <div class="chatbox_panel">
+                            <div class="chatbox_panel" ng-if="chatWith">
                                 <h2> <span class="title_chat_img pull-left">
-                                        <img src="images/users/6.jpg" alt="User Avatar" class="img-circle" />
+                                        <img ng-src="upload/profilesImg/{{chatWith.profileImg}}" alt="User Avatar" class="img-circle" />
                                     </span>  
-                                    Chat with {{chatWith ||"..........."}} </h2>
+                                    {{chatWith.username||"..........."}} </h2>
                                 <span class="status"> <i class="fa fa-circle online" aria-hidden="true"></i>Online </span> 
                             </div>
                             <div class="chat_panel" id="chatWindow">
@@ -181,15 +192,15 @@
                                     <p ng-bind="msg.msg">  </p>
                                     <small class="pull-right time"><i class="fa fa-clock-o"></i> {{msg.time|timeAgo}}</small>
                                 </div>
-                                
+
                             </div>
                             <div class="chat_footer">
                                 <div class="input-group">
-                                    <input type="text" my-enter ng-model="message" id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message" class="main-searchbox">
+                                    <input type="text" my-enter ng-model="message" id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message" 
+                                           class="main-searchbox1">
                                     <!--<input id="btn-input" type="text" class="form-control  main-searchbox" placeholder="Type your message here..." />-->
                                     <span class="input-group-btn">
-                                        <button ng-click="sendMsg()" class="btn btn-warning btn-sm" id="btn-chat">
-                                            Send</button>
+                                        <button ng-click="sendMsg()" class="btn btn-warning btn-lg" id="btn-chat"> <i class="fa fa-paper-plane" aria-hidden="true"></i> </button>
                                     </span>
                                 </div>
                             </div>
@@ -199,148 +210,160 @@
                 </div>
             </div>
         </div>
-<!--        <div class="container fill" ng-show="isLogin">
-            <div class="row chat-wrap">
-
-                 Contacts & Conversations 
-                <div class="col-sm-3 panel-wrap">
-
-                     Overlay Menu / Contacts 
-                    <div class="col-sm-12 section-wrap collapse" id="Contacts">
-
-                        Header
-                        <div class="row header-wrap">
-                            <div class="chat-header col-sm-12">
-                                <h4>Select a Contact</h4>
-                                <div class="header-button">
-                                    <a class="btn pull-right">
-                                        <i class="fa fa-close"></i>
-                                    </a>
+        <!--        <div class="container fill" ng-show="isLogin">
+                    <div class="row chat-wrap">
+        
+                         Contacts & Conversations 
+                        <div class="col-sm-3 panel-wrap">
+        
+                             Overlay Menu / Contacts 
+                            <div class="col-sm-12 section-wrap collapse" id="Contacts">
+        
+                                Header
+                                <div class="row header-wrap">
+                                    <div class="chat-header col-sm-12">
+                                        <h4>Select a Contact</h4>
+                                        <div class="header-button">
+                                            <a class="btn pull-right">
+                                                <i class="fa fa-close"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+        
+                            Left Menu / Conversation List
+                            <div class="col-sm-12 section-wrap">
+        
+                                Header
+                                <div class="row header-wrap">
+                                    <div class="chat-header col-sm-12">
+                                        <h4 id="username">Welcome {{activeUsername.username}}...!</h4>
+                                        <div class="header-button">
+                                            <a class="btn pull-right" href="#Contacts" data-toggle="collapse">
+                                                <i class="fa fa-pencil-square-o fa-lg"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                Conversations
+                                <div class="row content-wrap">
+                                    <div class="conversation btn" ng-repeat="user in connectedUser| orderBy:'lastMsgTime'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}" >
+                                        <div class="media-body">
+                                            <h5 class="media-heading" id="contactName">{{user.username}}</h5>
+                                            <small class="pull-right time">Last seen 12:10am</small>
+                                        </div>
+                                    </div>
+        
+                                </div>
+        
+                            </div>
+        
+                        </div>
+        
+                         Messages & Info 
+                        <div class="col-sm-9 panel-wrap">
+        
+                            Main Content / Message List
+                            <div class="section-wrap" ng-class="{'col-sm-12':showOnlineUser,'col-sm-9':!showOnlineUser}" id="Messages">
+        
+                                Header
+                                <div class="row header-wrap">
+                                    <div class="chat-header col-sm-12">
+                                        <h4>{{chatWith||"Conversation Title"}}
+                                            <span ng-click="logoutUser()" class="pull-right">Logout</span>
+                                        </h4>
+        
+                                        <div class="header-button">
+                                            <a ng-click="showOnlineUser = !showOnlineUser" class="btn pull-right info-btn">
+                                                <i ng-class="{'fa fa-arrow-right':showOnlineUser,'fa fa-users':!showOnlineUser}"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                Messages
+                                <div class="row content-wrap messages" id="chatWindow">
+                                    <div ng-repeat="msg in activeMsg" ng-class="{'msg':msg.sender != activeUsername._id,'msg1':msg.sender == activeUsername._id}">
+                                        <div class="media-body">
+                                            <h5 class="media-heading">{{msg.sender}}</h5>
+                                            <small class="col-sm-11">{{msg.msg}}</small>
+                                            <small class="pull-right time"><i class="fa fa-clock-o"></i> {{msg.time|timeAgo}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                Message box & Send Button
+                                <div class="row send-wrap">
+                                    <div class="send-message">
+                                        <div class="message-text">
+                                            <textarea my-enter ng-model="message" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
+                                        </div>
+                                        <div class="send-button">
+                                            <a ng-click="sendMsg()" class="btn">Send <i class="fa fa-send"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                            </div>
+        
+                            Sliding Menu / Conversation Members
+                            <div class="col-sm-3 section-wrap" ng-hide="showOnlineUser" id="Members">
+        
+                                Header
+                                <div class="row header-wrap">
+                                    <div class="chat-header col-sm-12">
+                                        <h4>Conversation Info</h4>
+        
+                                    </div>
+                                </div>
+        
+                                Members
+                                <div class="row content-wrap">
+                                    <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
+                                        <div class="media-body" ng-click="connectUserRoom(user)">
+                                            <h5 class="media-heading" ng-bind="user.username"></h5>
+                                            <small class="pull-left time"><i>{{user.roomId}}Available to chat</i></small>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                            </div>
+        
                         </div>
                     </div>
-
-                    Left Menu / Conversation List
-                    <div class="col-sm-12 section-wrap">
-
-                        Header
-                        <div class="row header-wrap">
-                            <div class="chat-header col-sm-12">
-                                <h4 id="username">Welcome {{activeUsername.username}}...!</h4>
-                                <div class="header-button">
-                                    <a class="btn pull-right" href="#Contacts" data-toggle="collapse">
-                                        <i class="fa fa-pencil-square-o fa-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        Conversations
-                        <div class="row content-wrap">
-                            <div class="conversation btn" ng-repeat="user in connectedUser| orderBy:'lastMsgTime'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}" >
-                                <div class="media-body">
-                                    <h5 class="media-heading" id="contactName">{{user.username}}</h5>
-                                    <small class="pull-right time">Last seen 12:10am</small>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                 Messages & Info 
-                <div class="col-sm-9 panel-wrap">
-
-                    Main Content / Message List
-                    <div class="section-wrap" ng-class="{'col-sm-12':showOnlineUser,'col-sm-9':!showOnlineUser}" id="Messages">
-
-                        Header
-                        <div class="row header-wrap">
-                            <div class="chat-header col-sm-12">
-                                <h4>{{chatWith||"Conversation Title"}}
-                                    <span ng-click="logoutUser()" class="pull-right">Logout</span>
-                                </h4>
-
-                                <div class="header-button">
-                                    <a ng-click="showOnlineUser = !showOnlineUser" class="btn pull-right info-btn">
-                                        <i ng-class="{'fa fa-arrow-right':showOnlineUser,'fa fa-users':!showOnlineUser}"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        Messages
-                        <div class="row content-wrap messages" id="chatWindow">
-                            <div ng-repeat="msg in activeMsg" ng-class="{'msg':msg.sender != activeUsername._id,'msg1':msg.sender == activeUsername._id}">
-                                <div class="media-body">
-                                    <h5 class="media-heading">{{msg.sender}}</h5>
-                                    <small class="col-sm-11">{{msg.msg}}</small>
-                                    <small class="pull-right time"><i class="fa fa-clock-o"></i> {{msg.time|timeAgo}}</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        Message box & Send Button
-                        <div class="row send-wrap">
-                            <div class="send-message">
-                                <div class="message-text">
-                                    <textarea my-enter ng-model="message" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
-                                </div>
-                                <div class="send-button">
-                                    <a ng-click="sendMsg()" class="btn">Send <i class="fa fa-send"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    Sliding Menu / Conversation Members
-                    <div class="col-sm-3 section-wrap" ng-hide="showOnlineUser" id="Members">
-
-                        Header
-                        <div class="row header-wrap">
-                            <div class="chat-header col-sm-12">
-                                <h4>Conversation Info</h4>
-
-                            </div>
-                        </div>
-
-                        Members
-                        <div class="row content-wrap">
-                            <div class="contact" ng-repeat="user in allUserList| orderBy:'username'" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
-                                <div class="media-body" ng-click="connectUserRoom(user)">
-                                    <h5 class="media-heading" ng-bind="user.username"></h5>
-                                    <small class="pull-left time"><i>{{user.roomId}}Available to chat</i></small>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>-->
+                </div>-->
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
         <script src="node_modules/angular/angular.min.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script src="js/ng-file-upload.min.js"></script>
+        <script src="js/ng-file-upload-shim.min.js"></script>
         <script src="node_modules/angular-timeago/dist/angular-timeago.min.js"></script>
         <script src="node_modules/angular-timeago/dist/angular-timeago-core.min.js"></script>
         <script src="node_modules/angular-timeago/src/languages/time-ago-language-en_US.js"></script>
         <script src="js/app.js"></script>
-		<script>
-			$(document).ready(function(){
-				$(".chatbar").on('click', function(){
-					$(".chat-user").addClass("chat_toggle");
-				});
-				$(".chat").on('click', function(){
-					$(".chat-user").removeClass("chat_toggle");
-				});
-			});
-		</script>
+        <script src="js/jquery.slimscroll.min.js"></script>
+        <script>
+                                            $(document).ready(function () {
+                                                $(".chatbar").on('click', function () {
+                                                    $(".chat-user").addClass("chat_toggle");
+                                                });
+                                                $(".chat").on('click', function () {
+                                                    $(".chat-user").removeClass("chat_toggle");
+                                                });
+
+                                                $('#chatWindow').slimscroll({height: '400px', start: 'bottom'});
+                                                // Add slideDown animation to dropdown
+                                                $('.dropdown').on('show.bs.dropdown', function (e) {
+                                                    $(this).find('.dropdown-menu').first().stop(true, true).slideDown();
+                                                });
+                                                $('.dropdown').on('hide.bs.dropdown', function (e) {
+                                                    $(this).find('.dropdown-menu').first().stop(true, true).slideUp();
+                                                });
+                                            });
+        </script>
     </body>
 </html>

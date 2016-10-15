@@ -82,7 +82,7 @@
                                             <img class="chat-profile-pic" ng-show="!!file" ngf-thumbnail="file"/>
                                             
                                         </label>
-                                        <input type="file" ng-change="uploadImage()" ngf-select ng-model="file" name="file"  ngf-pattern="'image/*'" accept="image/*" ngf-max-size="5MB" class="file_upload">
+                                        <input id="uploadImg" type="file" ng-change="uploadImage()" ngf-select ng-model="file" name="file"  ngf-pattern="'image/*'" accept="image/*" ngf-max-size="5MB" class="file_upload">
 
                                         
                                     </div>                           
@@ -127,7 +127,8 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="user-profile">
                                     
-                                    <img ng-src="upload/profilesImg/{{activeUsername.profileImg}}">
+                                    <!--<img ng-src="upload/profilesImg/{{activeUsername.profileImg}}">-->
+                                    <img data-ng-src="upload/profilesImg/{{activeUsername.profileImg}}" data-err-src="upload/profilesImg/avatar.jpg">
                                 </li>
                                 <li class="user-profile">
                                     <a> {{activeUsername.username}} </a>
@@ -156,12 +157,12 @@
                                 <!--- chat user 1 --->
                                 <li  class="left clearfix" ng-repeat="user in allUserList" ng-click="connectUserRoom(user)" ng-class="{'contact_online':(user.roomId == openRoom) && user.roomId}">
                                     <span class="chat-img pull-left">
-                                        <img ng-src="upload/profilesImg/{{user.profileImg}}" alt="User Avatar" class="img-circle" />
+                                        <img data-ng-src="upload/profilesImg/{{user.profileImg}}" data-err-src="upload/profilesImg/avatar.jpg" alt="User Avatar" class="img-circle" />
                                     </span>
                                     <div class="chat-body clearfix">
                                         <div class="user_title">
                                             <h2> {{user.username}}
-                                                <span class="status">Online <i class="fa fa-circle online" aria-hidden="true"></i> 
+                                                <span class="status">{{onlineStatus.indexOf(user._id)!="-1"?"online":"offline"}} <i ng-class="{'online':onlineStatus.indexOf(user._id)!='-1'}" class="fa fa-circle" aria-hidden="true"></i> 
                                                     <small class="block"> <span class="notifi"> 1 </span> </small>
                                                 </span>
                                             </h2>   
@@ -185,7 +186,7 @@
                                         <img ng-src="upload/profilesImg/{{chatWith.profileImg}}" alt="User Avatar" class="img-circle" />
                                     </span>  
                                     {{chatWith.username||"..........."}} </h2>
-                                <span class="status"> <i class="fa fa-circle online" aria-hidden="true"></i>Online </span> 
+                                <span class="status"> <i ng-class="{'online':onlineStatus.indexOf(chatWith._id)!='-1'}" class="fa fa-circle" aria-hidden="true"></i>{{onlineStatus.indexOf(chatWith._id)!="-1"?"online":"offline"}}  </span> 
                             </div>
                             <div class="chat_panel" id="chatWindow">
                                 <div ng-repeat="msg in activeMsg" ng-class="{'msg1':msg.sender != activeUsername._id,'msg2':msg.sender == activeUsername._id}">

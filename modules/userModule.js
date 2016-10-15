@@ -27,7 +27,8 @@ module.exports = {
     loginUser: function (loginCredential, callback) {
         var db = myMongoCon.getDB();
         var collection = db.collection('allUsers');
-        collection.find({$and: [{'username': loginCredential.userName}, {'password': loginCredential.userPassword}]}, {'username': 1, 'email': 1,connectedUser:1,profileImg:1}).toArray(function (err, result) {
+        var newUsername=loginCredential.userName.split(" ").map(function(i){return i[0].toUpperCase() + i.substring(1)}).join(" ");
+        collection.find({$and: [{'username': newUsername}, {'password': loginCredential.userPassword}]}, {'username': 1, 'email': 1,connectedUser:1,profileImg:1}).toArray(function (err, result) {
             if (err)
                 callback(false);
 

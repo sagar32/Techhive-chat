@@ -8,6 +8,7 @@ var express = require('express'),
         fs = require("file-system"),
         bodyParser = require("body-parser");
 var multer = require('multer');
+var roomIdsOnline = [];
 //Load Modules
 async.series([
     function (callback) {
@@ -37,13 +38,11 @@ async.series([
     app.use(bodyParser.json());
     var storage = multer.diskStorage({
         destination: function (req, file, callback) {
+            console.log(file);
             callback(null, './upload/profilesImg');
         },
         filename: function (req, file, callback) {
-            console.log('.' + file.originalname.split('.')[file.originalname.split('.').length - 1]);
-            var imageName=file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
-            var data={img:imageName,userId:global.gUserId};
-            usersModule.setProfileImage(data);
+            global.imageName = global.gUserId + '.' + file.originalname.split('.')[file.originalname.split('.').length - 1];
             callback(null, imageName);
         }
     });
@@ -54,21 +53,25 @@ async.series([
     });
 
 // upload image
-    app.post('/uploadImg', function (req, res, next) {
-        upload(req, res, function (err) {
-            if (err) {
-                return res.end("Error uploading file.");
-            }else{
-                
-            }
-            res.end("Image is uploaded");
-        });
+    app.post('/uploadImg', multer({storage: storage}).single('file'), function (req, res, next) {
+//        console.log(req.file);
+//        var raw = new Buffer(fs.readFileSync(req.file.path), 'binary').toString("base64");
+//        var data = {img: global.imageName, userId: global.gUserId, imgData: raw};
+        var data = {img: global.imageName, userId: global.gUserId};
+        usersModule.setProfileImage(data);
+        res.end();
     });
 // start socket.io
     io.sockets.on('connection', function (socket) {
 //connect to room
         socket.on('openRoom', function (room) {
             socket.join(room);
+        });
+//updateOnlineStatus  when page refrash
+        socket.on("updateOnlineStatus", function (data) {
+            roomIdsOnline.push(data.userId);
+            socket.userId = data.userId;
+            io.sockets.emit('uopdateStatus', roomIdsOnline);
         });
 // Login User Here.
         socket.on('loginUser', function (data, callback) {
@@ -86,7 +89,6 @@ async.series([
         socket.on('registerUser', function (data, callback) {
             usersModule.userRegister(data, function (response) {
                 if (response) {
-                    console.log(global.gUserId + " id global");
                     getRegUsers();
                     callback(response);
                 } else {
@@ -110,6 +112,7 @@ async.series([
             usersModule.getUserList(function (allUsers) {
                 if (allUsers)
                     io.sockets.emit("allUserRightSideList", allUsers);
+                io.sockets.emit('uopdateStatus', roomIdsOnline);
             });
         }
 // send message store
@@ -127,6 +130,13 @@ async.series([
                 }
             });
         }
+        socket.on('disconnect', function (data) {
+            if (!socket.userId)
+                return;
+            roomIdsOnline.splice(roomIdsOnline.indexOf(socket.userId), 1);
+            io.sockets.emit('uopdateStatus', roomIdsOnline);
+            getRegUsers();
+        });
         getRegUsers();
         allRoomMsg();
     });

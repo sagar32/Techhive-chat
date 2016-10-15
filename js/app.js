@@ -18,7 +18,8 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                     $scope.isLogin = true;
                     var index = -1;
                     $scope.activeUsername = JSON.parse($window.localStorage.getItem("isLoginUser"));
-//                                console.log($scope.activeUsername);
+                    console.log($scope.activeUsername);
+                    socket.emit("updateOnlineStatus", {userId: $scope.activeUsername._id});
                     socket.on("allUserRightSideList", function (allUsersList) {
                         $scope.allUserList = allUsersList;
                         $scope.connectedUser = [];
@@ -58,6 +59,7 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                         };
                         socket.emit('loginUser', $scope.login, function (data) {
                             if (data) {
+                                console.log(data);
                                 $window.localStorage.setItem("isLoginUser", JSON.stringify(data));
                                 $scope.onLoginSuccess();
                             } else {
@@ -76,11 +78,20 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                         console.log($scope.register);
                         socket.emit("registerUser", $scope.register, function (data) {
                             if (data) {
-                                $window.localStorage.setItem("isLoginUser", JSON.stringify(data));
                                 if ($scope.file) { //check if from is valid
                                     $scope.upload($scope.file); //call upload function
                                 }
-                                $scope.onLoginSuccess();
+                                $timeout(function () {
+                                    socket.emit('loginUser', {userName: data.username, userPassword: data.password}, function (data1) {
+                                        if (data1) {
+                                            console.log(data1);
+                                            $window.localStorage.setItem("isLoginUser", JSON.stringify(data1));
+                                            $scope.onLoginSuccess();
+                                        } else {
+                                            $scope.isError1 = 'You are not registred user, Please Sign up with us.';
+                                        }
+                                    });
+                                }, 1000);
                             } else {
                                 $scope.isError = "your email or username already regitred with us."
                             }
@@ -107,8 +118,12 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                 $scope.logoutUser = function () {
                     console.log("logout call");
                     $window.localStorage.removeItem("isLoginUser");
+                    socket.disconnect();
                     $scope.isLogin = false;
                 };
+                socket.on("uopdateStatus", function (data) {
+                    $scope.onlineStatus = data;
+                });
                 $scope.connectUserRoom = function (user) {
                     if (angular.isUndefined(user.roomId)) {
                         socket.emit("connectUserRoom", {me: $scope.activeUsername, with : user}, function (data) {
@@ -146,13 +161,10 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                 //**********
                 //single message.
                 socket.on('OneRoomMsg', function (data) {
-                    console.log(data);
                     if ($scope.roomViseMsg.hasOwnProperty(data.roomId)) {
                         $scope.roomViseMsg[data.roomId].push(data.messages[0]);
                     } else {
-                        console.log("nathi");
                         $scope.roomViseMsg[data.roomId] = data.messages;
-                        console.log(data.messages[0]);
 
                     }
                     $scope.switchRoom($scope.openRoom);
@@ -202,6 +214,11 @@ angular.module("chatSystem", ['yaru22.angular-timeago', 'ngFileUpload'])
                             }
                         });
                     });
+                },
+                disconnect: function () {
+
+                    return socket.disconnect();
+
                 }
             };
         })

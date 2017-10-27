@@ -4,7 +4,8 @@
   "description": "This is chat system like facebook chat.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nohup node server.js &"
   },
   "author": "sagar chopada",
   "license": "ISC",

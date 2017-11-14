@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nohup node server.js"
+    "start": "pm2 start --name node-chat server.js",
+    "stop":"pm2 delete node-chat"
   },
   "author": "sagar chopada",
   "license": "ISC",

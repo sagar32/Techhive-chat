@@ -25,7 +25,9 @@ async.series([
     var messageStorage = require('./modules/messageStorage');
     var users = [];
 // start server on 3000 port
-    server.listen(process.env.PORT || 3000);
+    server.listen(process.env.PORT || 3000,function(){
+    console.log("server start listening port 3000");
+    });
 
 //start connection with mongo db
 

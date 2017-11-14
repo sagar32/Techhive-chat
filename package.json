@@ -1,5 +1,5 @@
 {
-  "name": "Nodejs-chat",
+  "name": "Node-chat",
   "version": "1.0.0",
   "description": "This is chat system like facebook chat.",
   "main": "server.js",

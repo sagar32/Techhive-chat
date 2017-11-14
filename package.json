@@ -1,5 +1,5 @@
 {
-  "name": "Techhive-chat",
+  "name": "Nodejs-chat",
   "version": "1.0.0",
   "description": "This is chat system like facebook chat.",
   "main": "server.js",

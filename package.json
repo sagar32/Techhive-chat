@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"cd /var/lib/jenkins/workspace/node-chat && nohup node server.js &"
+    "start":"nohup node server.js &"
   },
   "author": "sagar chopada",
   "license": "ISC",
